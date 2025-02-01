@@ -163,8 +163,8 @@
 #include "PY/TzLiq1.h"
 #include "PY/QzLiq1.h"
 // Unified CPT based method
-//#include "TzSandCPT.h"
-//#include "QbSandCPT.h"
+#include "TzSandCPT.h"
+#include "QbSandCPT.h"
 
 #include "fedeas/FedeasBond1Material.h"
 #include "fedeas/FedeasBond2Material.h"
@@ -1837,11 +1837,11 @@ FEM_ObjectBrokerAllClasses::getNewUniaxialMaterial(int classTag)
     case MAT_TAG_QzLiq1:
 		return new QzLiq1();
 
-	/*case MAT_TAG_TzSandCPT:
+	case MAT_TAG_TzSandCPT:
 		return new TzSandCPT();
 
 	case MAT_TAG_QbSandCPT:
-		return new QbSandCPT();*/
+		return new QbSandCPT();
 
 	case MAT_TAG_Hysteretic:
 		return new HystereticMaterial();
