@@ -119,6 +119,9 @@
     <Filter Include="section\LayeredMembraneSection">
       <UniqueIdentifier>{5db15df2-5764-49de-b5d0-e7b292f7136e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="taperedSection">
+      <UniqueIdentifier>{341e0135-5938-43f9-8e54-3cd8d16ff9a0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\SRC\material\uniaxial\AxialSp.cpp">

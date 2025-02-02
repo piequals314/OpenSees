@@ -365,6 +365,8 @@
 #define SEC_TAG_CreepSection 38
 #define SEC_TAG_ASDCoupledHinge3D 39
 #define SEC_TAG_PipeSection 40
+// Brighton Laiman: University of California, San Diego
+#define SEC_TAG_TaperedFiberSectionSmoothing3d  49
 
 #define SEC_TAG_MCFTFiberSection2d 7601
 
@@ -708,6 +710,10 @@
 #define ELE_TAG_DispBeamColumnNL3d        640
 #define ELE_TAG_DispBeamColumnWarping3d        641
 #define ELE_TAG_DispBeamColumnAsym3d           642
+// Brighton Laiman: University of California, San Diego
+#define ELE_TAG_TaperedDispBeamColumn3d 9900
+#define ELE_TAG_TaperedDispBeamColumnSmoothing3d 9901
+
 #define ELE_TAG_HingedBeam2d            65
 #define ELE_TAG_HingedBeam3d            66
 #define ELE_TAG_TwoPointHingedBeam2d    67
@@ -954,6 +960,10 @@
 #define CRDTR_TAG_CorotCrdTransf3d  6
 #define CRDTR_TAG_CorotCrdTransfWarping3d  61
 #define CRDTR_TAG_LinearCrdTransf2dInt 7
+// Brighton Laiman: University of California, San Diego
+#define CRDTR_TAG_CorotCrdTransf3d22  62
+#define CRDTR_TAG_LinearCrdTransf3d22 41
+#define CRDTR_TAG_PDeltaCrdTransf3d22 51
 
 #define DMP_TAG_UniformDamping 1
 #define DMP_TAG_SecStifDamping 2

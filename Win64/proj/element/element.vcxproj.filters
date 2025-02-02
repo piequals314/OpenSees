@@ -317,6 +317,24 @@
     <ClCompile Include="..\..\..\SRC\element\shell\ShellNLDKGTThermal.cpp" />
     <ClCompile Include="..\..\..\SRC\element\pipe\CurvedPipe.cpp" />
     <ClCompile Include="..\..\..\SRC\element\pipe\Pipe.cpp" />
+    <ClCompile Include="..\..\..\SRC\element\taperedDispBeamColumn\TaperedDispBeamColumn3d.cpp">
+      <Filter>taperedDispBeamColumn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\SRC\element\taperedDispBeamColumn\TaperedDispBeamColumnSmoothing3d.cpp">
+      <Filter>taperedDispBeamColumn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\SRC\element\forceBeamColumn\TclTaperedForceBeamColumnCommand.cpp">
+      <Filter>forceBeamColumn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\SRC\coordTransformation\PDeltaCrdTransf3d22.cpp">
+      <Filter>crdTransf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\SRC\coordTransformation\LinearCrdTransf3d22.cpp">
+      <Filter>crdTransf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\SRC\coordTransformation\CorotCrdTransf3d22.cpp">
+      <Filter>crdTransf</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\OTHER\tetgen1.4.3\tetgen.h" />
@@ -594,5 +612,31 @@
     <ClInclude Include="..\..\..\SRC\element\NewElement.h" />
     <ClInclude Include="..\..\..\SRC\element\forceBeamColumn\ForceBeamColumn3dThermal.h" />
     <ClInclude Include="..\..\..\SRC\element\shell\ShellNLDKGTThermal.h" />
+    <ClInclude Include="..\..\..\SRC\element\taperedDispBeamColumn\TaperedDispBeamColumn3d.h">
+      <Filter>taperedDispBeamColumn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\SRC\element\taperedDispBeamColumn\TaperedDispBeamColumnSmoothing3d.h">
+      <Filter>taperedDispBeamColumn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\SRC\coordTransformation\PDeltaCrdTransf3d22.h">
+      <Filter>crdTransf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\SRC\coordTransformation\LinearCrdTransf3d22.h">
+      <Filter>crdTransf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\SRC\coordTransformation\CorotCrdTransf3d22.h">
+      <Filter>crdTransf</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="taperedDispBeamColumn">
+      <UniqueIdentifier>{fd7f7e06-115d-442e-b48a-2f87d268dfb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="forceBeamColumn">
+      <UniqueIdentifier>{691d3e4c-24ea-4325-9b37-5a177e09c6d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="crdTransf">
+      <UniqueIdentifier>{15d22df9-61d9-4616-89b8-cf60a463f557}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
