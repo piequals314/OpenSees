@@ -72,6 +72,7 @@
 
 #include <ElasticSection2d.h>
 #include <ElasticSection3d.h>
+//#include <elementAPI.h>
 
 extern void printCommand(int argc, TCL_Char ** argv);
 
@@ -356,7 +357,7 @@ TclModelBuilder_addTaperedForceBeamColumn(ClientData clientData,
 	#ifdef DEBUG
 	    printf("Obtaining the transformation\n");
 	#endif
-	    theTransf3d = OPS_GetCrdTransf(transfTag);
+	    theTransf3d = OPS_getCrdTransf(transfTag);
 
             if (theTransf3d == 0) {
                 opserr << "WARNING transformation not found\n";
@@ -421,7 +422,7 @@ TclModelBuilder_addTaperedForceBeamColumn(ClientData clientData,
 
     if (ndm == 3) {
 
-	theTransf3d = OPS_GetCrdTransf(transfTag);
+	theTransf3d = OPS_getCrdTransf(transfTag);
 
         if (theTransf3d == 0) {
             opserr << "WARNING transformation not found\n";

@@ -49,6 +49,8 @@ public:
     CorotCrdTransf3d22();
     ~CorotCrdTransf3d22();
     
+    const char *getClassType() const { return "CorotCrdTransf3d22"; };
+
     int initialize(Node *nodeIPointer, Node *nodeJPointer);
     int update(void);
     double getInitialLength(void);
@@ -75,15 +77,22 @@ public:
     
     void Print(OPS_Stream &s, int flag = 0);
     
+    // method used to rotate consistent mass matrix
+    const Matrix &getGlobalMatrixFromLocal(const Matrix &local);
+
     // functions used in post-processing only    
     const Vector &getPointGlobalCoordFromLocal(const Vector &localCoords);
     const Vector &getPointGlobalDisplFromBasic(double xi, const Vector &basicDisps);
-    
+    const Vector &getPointLocalDisplFromBasic(double xi, const Vector &basicDisps);
+
     int  getLocalAxes(Vector &xAxis, Vector &yAxis, Vector &zAxis);
-    
+  int getRigidOffsets(Vector &offsets);
+
 private:
     void compTransfMatrixBasicGlobal(void);
     void compTransfMatrixBasicGlobalNew(void);
+    void compTransfMatrixLocalGlobal(Matrix &Tlg);
+    void compTransfMatrixBasicLocal(Matrix &Tbl);
     const Vector &getQuaternionFromRotMatrix(const Matrix &RotMatrix) const;
     const Vector &getQuaternionFromPseudoRotVector(const Vector &theta) const;
     const Vector &getTangScaledPseudoVectorFromQuaternion(const Vector &theta) const;
@@ -124,6 +133,10 @@ private:
     static Matrix e;            // base vectors
     static Matrix Tp;           // transformation matrix to renumber dofs
     static Matrix T;            // transformation matrix from basic to global system
+    static Matrix Tlg;          // transformation matrix from global to local system
+    static Matrix TlgInv;       // inverse of transformation matrix from global to local system
+    static Matrix Tbl;          // transformation matrix from local to basic system
+    static Matrix kg;           // global stiffness matrix
     static Matrix Lr2, Lr3, A;  // auxiliary matrices	
     
     double *nodeIInitialDisp, *nodeJInitialDisp;

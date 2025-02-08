@@ -39,9 +39,13 @@
 #include <Matrix.h>
 #include <Node.h>
 #include <Channel.h>
-
+#include <elementAPI.h>
+#include <string>
 #include <PDeltaCrdTransf3d22.h>
 
+// initialize static variables
+Matrix PDeltaCrdTransf3d22::Tlg(22, 22);
+Matrix PDeltaCrdTransf3d22::kg(22, 22);
 
 // constructor:
 PDeltaCrdTransf3d22::PDeltaCrdTransf3d22(int tag, const Vector &vecInLocXZPlane):
@@ -63,6 +67,50 @@ nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
 
 
 // constructor:
+PDeltaCrdTransf3d22::PDeltaCrdTransf3d22(int tag, const Vector &vecInLocXZPlane,
+                                         const Vector &rigJntOffset1,
+                                         const Vector &rigJntOffset2):
+CrdTransf(tag, CRDTR_TAG_PDeltaCrdTransf3d22),
+nodeIPtr(0), nodeJPtr(0),
+nodeIOffset(0), nodeJOffset(0),
+L(0), ul112(0), ul213(0),
+nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
+{
+    for (int i = 0; i < 2; i++)
+        for (int j = 0; j < 3; j++)
+            R[i][j] = 0.0;
+
+    R[2][0] = vecInLocXZPlane(0);
+    R[2][1] = vecInLocXZPlane(1);
+    R[2][2] = vecInLocXZPlane(2);
+
+    // check rigid joint offset for node I
+    if (rigJntOffset1.Size() != 3) {
+        opserr << "PDeltaCrdTransf3d22::PDeltaCrdTransf3d22:  Invalid rigid joint offset vector for node I\n";
+        opserr << "Size must be 3\n";
+    }
+    else if (rigJntOffset1.Norm() > 0.0) {
+        nodeIOffset = new double[3];
+        nodeIOffset[0] = rigJntOffset1(0);
+        nodeIOffset[1] = rigJntOffset1(1);
+        nodeIOffset[2] = rigJntOffset1(2);
+    }
+
+    // check rigid joint offset for node J
+    if (rigJntOffset2.Size() != 3) {
+        opserr << "PDeltaCrdTransf3d22::PDeltaCrdTransf3d22:  Invalid rigid joint offset vector for node J\n";
+        opserr << "Size must be 3\n";
+    }
+    else if (rigJntOffset2.Norm() > 0.0) {
+        nodeJOffset = new double[3];
+        nodeJOffset[0] = rigJntOffset2(0);
+        nodeJOffset[1] = rigJntOffset2(1);
+        nodeJOffset[2] = rigJntOffset2(2);
+    }
+}
+
+
+// constructor:
 // invoked by a FEM_ObjectBroker, recvSelf() needs to be invoked on this object.
 PDeltaCrdTransf3d22::PDeltaCrdTransf3d22():
 CrdTransf(0, CRDTR_TAG_PDeltaCrdTransf3d22),
@@ -79,6 +127,10 @@ nodeIInitialDisp(0), nodeJInitialDisp(0), initialDispChecked(false)
 // destructor:
 PDeltaCrdTransf3d22::~PDeltaCrdTransf3d22()
 {
+    if (nodeIOffset)
+        delete[] nodeIOffset;
+    if (nodeJOffset)
+        delete[] nodeJOffset;
     if (nodeIInitialDisp != 0)
         delete [] nodeIInitialDisp;
     if (nodeJInitialDisp != 0)
@@ -241,6 +293,22 @@ PDeltaCrdTransf3d22::computeElemtLengthAndOrient()
     return 0;
 }
 
+void PDeltaCrdTransf3d22::compTransfMatrixLocalGlobal(Matrix &Tlg)
+{
+    // setup transformation matrix from local to global
+    Tlg.Zero();
+
+    Tlg(0, 0) = Tlg(3, 3) = Tlg(6, 6) = Tlg(9, 9)   = R[0][0];
+    Tlg(0, 1) = Tlg(3, 4) = Tlg(6, 7) = Tlg(9, 10)  = R[0][1];
+    Tlg(0, 2) = Tlg(3, 5) = Tlg(6, 8) = Tlg(9, 11)  = R[0][2];
+    Tlg(1, 0) = Tlg(4, 3) = Tlg(7, 6) = Tlg(10, 9)  = R[1][0];
+    Tlg(1, 1) = Tlg(4, 4) = Tlg(7, 7) = Tlg(10, 10) = R[1][1];
+    Tlg(1, 2) = Tlg(4, 5) = Tlg(7, 8) = Tlg(10, 11) = R[1][2];
+    Tlg(2, 0) = Tlg(5, 3) = Tlg(8, 6) = Tlg(11, 9)  = R[2][0];
+    Tlg(2, 1) = Tlg(5, 4) = Tlg(8, 7) = Tlg(11, 10) = R[2][1];
+    Tlg(2, 2) = Tlg(5, 5) = Tlg(8, 8) = Tlg(11, 11) = R[2][2];
+}
+
 
 int
 PDeltaCrdTransf3d22::getLocalAxes(Vector &XAxis, Vector &YAxis, Vector &ZAxis)
@@ -289,6 +357,22 @@ PDeltaCrdTransf3d22::getLocalAxes(Vector &XAxis, Vector &YAxis, Vector &ZAxis)
     R[2][1] = zAxis(1);
     R[2][2] = zAxis(2);
    
+    return 0;
+}
+
+int PDeltaCrdTransf3d22::getRigidOffsets(Vector &offsets)
+{
+    if (nodeIOffset != 0) {
+        offsets(0) = nodeIOffset[0];
+        offsets(1) = nodeIOffset[1];
+        offsets(2) = nodeIOffset[2];
+    }
+    if (nodeJOffset != 0) {
+        offsets(3) = nodeJOffset[0];
+        offsets(4) = nodeJOffset[1];
+        offsets(5) = nodeJOffset[2];
+    }
+
     return 0;
 }
 
@@ -397,7 +481,7 @@ PDeltaCrdTransf3d22::getBasicTrialDisp (void)
 
 
 const Vector &
-PDeltaCrdTransf3d22::getBasicIncrDisp (void)
+PDeltaCrdTransf3d22::getBasicIncrDisp(void)
 {
     // determine global displacements
     const Vector &disp1 = nodeIPtr->getIncrDisp();
@@ -1107,8 +1191,23 @@ PDeltaCrdTransf3d22::getCopy3d(void)
     xz(0) = R[2][0];
     xz(1) = R[2][1];
     xz(2) = R[2][2];
-   
-    theCopy = new PDeltaCrdTransf3d22(this->getTag(), xz);
+
+    Vector offsetI(3);
+    Vector offsetJ(3);
+
+    if (nodeIOffset) {
+        offsetI(0) = nodeIOffset[0];
+        offsetI(1) = nodeIOffset[1];
+        offsetI(2) = nodeIOffset[2];
+    }
+
+    if (nodeJOffset) {
+        offsetJ(0) = nodeJOffset[0];
+        offsetJ(1) = nodeJOffset[1];
+        offsetJ(2) = nodeJOffset[2];
+    }
+
+    theCopy = new PDeltaCrdTransf3d22(this->getTag(), xz, offsetI, offsetJ);
    
     theCopy->nodeIPtr = nodeIPtr;
     theCopy->nodeJPtr = nodeJPtr;
@@ -1329,11 +1428,84 @@ PDeltaCrdTransf3d22::getPointGlobalDisplFromBasic (double xi, const Vector &uxb)
     return uxg;  
 }
 
+const Vector &PDeltaCrdTransf3d22::getPointLocalDisplFromBasic(double xi, const Vector &uxb)
+{
+    // determine global displacements
+    const Vector &disp1 = nodeIPtr->getTrialDisp();
+    const Vector &disp2 = nodeJPtr->getTrialDisp();
+
+    static double ug[22];
+    for (int i = 0; i < 11; i++)
+    {
+        ug[i] = disp1(i);
+        ug[i + 11] = disp2(i);
+    }
+
+    if (nodeIInitialDisp != 0) {
+        for (int j = 0; j < 11; j++)
+            ug[j] -= nodeIInitialDisp[j];
+    }
+
+    if (nodeJInitialDisp != 0) {
+        for (int j = 0; j < 11; j++)
+            ug[j + 11] -= nodeJInitialDisp[j];
+    }
+
+    // transform global end displacements to local coordinates
+    //ul.addMatrixVector(0.0, Tlg,  ug, 1.0);       //  ul = Tlg *  ug;
+    static double ul[22];
+
+    ul[0] = R[0][0] * ug[0] + R[0][1] * ug[1] + R[0][2] * ug[2];
+    ul[1] = R[1][0] * ug[0] + R[1][1] * ug[1] + R[1][2] * ug[2];
+    ul[2] = R[2][0] * ug[0] + R[2][1] * ug[1] + R[2][2] * ug[2];
+
+    ul[3] = R[0][0] * ug[3] + R[0][1] * ug[4] + R[0][2] * ug[5];
+    ul[4] = R[1][0] * ug[3] + R[1][1] * ug[4] + R[1][2] * ug[5];
+    ul[5] = R[2][0] * ug[3] + R[2][1] * ug[4] + R[2][2] * ug[5];
+
+    ul[6] = ug[6];  // do not transform warping
+    ul[7] = ug[7];  // do not transform top flange rotation
+    ul[8] = ug[8];  // do not transform top flange curvature
+    ul[9] = ug[9];  // do not transform bottom flange rotation
+    ul[10] = ug[10]; // do not transform bottom flange curvature
+
+    ul[11] = R[0][0] * ug[11] + R[0][1] * ug[12] + R[0][2] * ug[13];
+    ul[12] = R[1][0] * ug[11] + R[1][1] * ug[12] + R[1][2] * ug[13];
+    ul[13] = R[2][0] * ug[11] + R[2][1] * ug[12] + R[2][2] * ug[13];
+
+    ul[14] = R[0][0] * ug[14] + R[0][1] * ug[15] + R[0][2] * ug[16];
+    ul[15] = R[1][0] * ug[14] + R[1][1] * ug[15] + R[1][2] * ug[16];
+    ul[16] = R[2][0] * ug[14] + R[2][1] * ug[15] + R[2][2] * ug[16];
+
+    ul[17] = ug[17]; // do not transform warping
+    ul[18] = ug[18]; // do not transform top flange rotation
+    ul[19] = ug[19]; // do not transform top flange curvature
+    ul[20] = ug[20]; // do not transform bottom flange rotation
+    ul[21] = ug[21]; // do not transform bottom flange curvature 
+
+    // compute displacements at point xi, in local coordinates
+    static Vector uxl(3);
+
+    uxl(0) = uxb(0) + ul[0];
+    uxl(1) = uxb(1) + (1 - xi) * ul[1] + xi * ul[7];
+    uxl(2) = uxb(2) + (1 - xi) * ul[2] + xi * ul[8];
+
+    return uxl;
+}
+
 
 void
 PDeltaCrdTransf3d22::Print(OPS_Stream &s, int flag)
 {
     s << "\nCrdTransf: " << this->getTag() << " Type: PDeltaCrdTransf3d22" << endln;
+}
+
+const Matrix &PDeltaCrdTransf3d22::getGlobalMatrixFromLocal(const Matrix &ml)
+{
+    this->compTransfMatrixLocalGlobal(Tlg);  // OPTIMIZE LATER
+    kg.addMatrixTripleProduct(0.0, Tlg, ml, 1.0);  // OPTIMIZE LATER
+
+    return kg;
 }
  
 

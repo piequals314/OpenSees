@@ -44,10 +44,15 @@ class LinearCrdTransf3d22: public CrdTransf
 {
 public:
     LinearCrdTransf3d22(int tag, const Vector &vecInLocXZPlane);
-    
+    LinearCrdTransf3d22(int tag, const Vector &vecInLocXZPlane,
+        const Vector &rigJntOffsetI,
+        const Vector &rigJntOffsetJ);
+
     LinearCrdTransf3d22();
     ~LinearCrdTransf3d22();
-    
+
+    const char* getClassType() const { return "LinearCrdTransf3d"; };
+
     int initialize(Node *node1Pointer, Node *node2Pointer);
     int update(void);
     double getInitialLength(void);
@@ -73,23 +78,36 @@ public:
     int recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
     
     void Print(OPS_Stream &s, int flag = 0);
-    
+
+    // method used to rotate consistent mass matrix
+    const Matrix &getGlobalMatrixFromLocal(const Matrix &local);
+
     // functions used in post-processing only    
     const Vector &getPointGlobalCoordFromLocal(const Vector &localCoords);
     const Vector &getPointGlobalDisplFromBasic(double xi, const Vector &basicDisps);
-    
-    int getLocalAxes(Vector &xAxis, Vector &yAxis, Vector &zAxis);
+    const Vector &getPointLocalDisplFromBasic(double xi, const Vector &basicDisps);
 
+    int getLocalAxes(Vector &xAxis, Vector &yAxis, Vector &zAxis);
+  int getRigidOffsets(Vector &offsets);
+
+  ////////////////// sensitivity /////////////////////////////////
+  const Vector & getBasicDisplSensitivity (int gradNumber);
+  ///////////////////////////////////////////////////////////// 
 private:
     int computeElemtLengthAndOrient(void);
-    
+    void compTransfMatrixLocalGlobal(Matrix &Tlg);
     
     // internal data
     Node *nodeIPtr, *nodeJPtr;  // pointers to the element two endnodes
-    
+
+    double *nodeIOffset, *nodeJOffset;	// rigid joint offsets
+
     double R[3][3];	// Transformation matrix
     
     double L;   // undeformed element length
+
+    static Matrix Tlg;  // matrix that transforms from global to local coordinates
+    static Matrix kg;   // global stiffness matrix
 
     double *nodeIInitialDisp, *nodeJInitialDisp;
     bool initialDispChecked;

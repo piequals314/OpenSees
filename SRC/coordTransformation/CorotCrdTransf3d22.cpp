@@ -1020,6 +1020,40 @@ CorotCrdTransf3d22::compTransfMatrixBasicGlobalNew(void)
             T(6,i) -= Lr(i)*c;
 }
 
+void CorotCrdTransf3d22::compTransfMatrixLocalGlobal(Matrix &Tlg)
+{
+    // setup transformation matrix from local to global
+    Tlg.Zero();
+
+    Tlg(0, 0) = Tlg(3, 3) = Tlg(6, 6) = Tlg(9, 9) = R0(0, 0);
+    Tlg(0, 1) = Tlg(3, 4) = Tlg(6, 7) = Tlg(9, 10) = R0(1, 0);
+    Tlg(0, 2) = Tlg(3, 5) = Tlg(6, 8) = Tlg(9, 11) = R0(2, 0);
+    Tlg(1, 0) = Tlg(4, 3) = Tlg(7, 6) = Tlg(10, 9) = R0(0, 1);
+    Tlg(1, 1) = Tlg(4, 4) = Tlg(7, 7) = Tlg(10, 10) = R0(1, 1);
+    Tlg(1, 2) = Tlg(4, 5) = Tlg(7, 8) = Tlg(10, 11) = R0(2, 1);
+    Tlg(2, 0) = Tlg(5, 3) = Tlg(8, 6) = Tlg(11, 9) = R0(0, 2);
+    Tlg(2, 1) = Tlg(5, 4) = Tlg(8, 7) = Tlg(11, 10) = R0(1, 2);
+    Tlg(2, 2) = Tlg(5, 5) = Tlg(8, 8) = Tlg(11, 11) = R0(2, 2);
+}
+
+void CorotCrdTransf3d22::compTransfMatrixBasicLocal(Matrix &Tbl)
+{
+    // setup transformation matrix from basic to local
+    Tbl.Zero();
+
+    // first get transformation matrix from basic to global 
+    static Matrix Tbg(6, 12);
+    Tbg.addMatrixProduct(0.0, Tp, T, 1.0);
+
+    // get inverse of transformation matrix from local to global
+    this->compTransfMatrixLocalGlobal(Tlg);
+    // Tlg.Invert(TlgInv);
+    TlgInv.addMatrixTranspose(0.0, Tlg, 1.0);  // for square rot-matrix: Tlg^-1 = Tlg'
+
+    // finally get transformation matrix from basic to local
+    Tbl.addMatrixProduct(0.0, Tbg, TlgInv, 1.0);
+}
+
 
 const Vector &
 CorotCrdTransf3d22::getBasicTrialDisp (void)
@@ -1596,6 +1630,18 @@ CorotCrdTransf3d22::getLocalAxes(Vector &XAxis, Vector &YAxis, Vector &ZAxis)
         R0(i,2) = zAxis(i);
     }      
     
+    return 0;
+}
+
+int CorotCrdTransf3d22::getRigidOffsets(Vector &offsets)
+{
+    offsets(0) = nodeIOffset(0);
+    offsets(1) = nodeIOffset(1);
+    offsets(2) = nodeIOffset(2);
+    offsets(3) = nodeJOffset(0);
+    offsets(4) = nodeJOffset(1);
+    offsets(5) = nodeJOffset(2);
+
     return 0;
 }
 
@@ -2211,6 +2257,16 @@ CorotCrdTransf3d22::getPointGlobalDisplFromBasic (double xi, const Vector &uxb)
     return uxg;  
 }
 
+const Vector &
+CorotCrdTransf3d22::getPointLocalDisplFromBasic(double xi, const Vector &uxb)
+{
+    static Vector uxg(3);
+    opserr << " CorotCrdTransf3d22::getPointLocalDisplFromBasic: not implemented yet";
+
+
+    return uxg;
+}
+
 
 void
 CorotCrdTransf3d22::Print(OPS_Stream &s, int flag)
@@ -2219,4 +2275,13 @@ CorotCrdTransf3d22::Print(OPS_Stream &s, int flag)
     s << "\tvAxis: " << vAxis;
     s << "\tnodeI Offset: " << nodeIOffset;
     s << "\tnodeJ Offset: " << nodeJOffset;
+}
+
+const Matrix &
+CorotCrdTransf3d22::getGlobalMatrixFromLocal(const Matrix &local)
+{
+    this->compTransfMatrixLocalGlobal(Tlg);  // OPTIMIZE LATER
+    kg.addMatrixTripleProduct(0.0, Tlg, local, 1.0);  // OPTIMIZE LATER
+
+    return kg;
 }

@@ -44,10 +44,15 @@ class PDeltaCrdTransf3d22: public CrdTransf
 {
 public:
     PDeltaCrdTransf3d22(int tag, const Vector &vecInLocXZPlane);
+    PDeltaCrdTransf3d22(int tag, const Vector &vecInLocXZPlane,
+        const Vector &rigJntOffsetI,
+        const Vector &rigJntOffsetJ);    
     
     PDeltaCrdTransf3d22();
     ~PDeltaCrdTransf3d22();
-    
+
+    const char *getClassType() const { return "PDeltaCrdTransf3d"; };
+
     int initialize(Node *node1Pointer, Node *node2Pointer);
     int update(void);
     double getInitialLength(void);
@@ -73,24 +78,35 @@ public:
     int recvSelf(int cTag, Channel &theChannel, FEM_ObjectBroker &theBroker);
     
     void Print(OPS_Stream &s, int flag = 0);
-    
+
+    // method used to rotate consistent mass matrix
+    const Matrix &getGlobalMatrixFromLocal(const Matrix &local);
+
     // functions used in post-processing only    
     const Vector &getPointGlobalCoordFromLocal(const Vector &localCoords);
     const Vector &getPointGlobalDisplFromBasic(double xi, const Vector &basicDisps);
-    
+    const Vector &getPointLocalDisplFromBasic(double xi, const Vector &basicDisps);
+
     int getLocalAxes(Vector &xAxis, Vector &yAxis, Vector &zAxis);
-    
+  int getRigidOffsets(Vector &offsets);
+
 private:
     int computeElemtLengthAndOrient(void);
-    
+    void compTransfMatrixLocalGlobal(Matrix &Tlg);
+
     // internal data
     Node *nodeIPtr, *nodeJPtr;  // pointers to the element two endnodes
-    
+
+    double *nodeIOffset, *nodeJOffset;	// rigid joint offsets
+
     double R[3][3];	// Transformation matrix
     
     double L;           // undeformed element length
     double ul112;	// Transverse local displacement offsets of P-Delta
     double ul213;
+
+    static Matrix Tlg;  // matrix that transforms from global to local coordinates
+    static Matrix kg;   // global stiffness matrix
 
     double *nodeIInitialDisp, *nodeJInitialDisp;
     bool initialDispChecked;

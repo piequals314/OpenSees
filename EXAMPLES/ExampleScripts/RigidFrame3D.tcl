@@ -148,8 +148,8 @@ set GJ [expr $G*$Jbeam]
 source RCsection.tcl
 
 # Call the procedure to generate a column section
-#          id  h  b cover core cover steel nBars barArea nfCoreY nfCoreZ nfCoverY nfCoverZ
-RCsection   1 18 15   2.5    1     2     3     3    0.79       8       8       10       10
+#          id  h  b cover core cover steel nBars barArea nfCoreY nfCoreZ nfCoverY nfCoverZ GJ
+RCsection   1 18 15   2.5    1     2     3     3    0.79       8       8       10       10 $GJ
 
 # Linear elastic torion
 uniaxialMaterial Elastic 10 $GJ
