@@ -28,6 +28,7 @@ element truss 1  1 2 1.0  1
 fix 1 1 1 
 fix 2 0 1 
 
+#Might be useful - Pi
 recorder Node -file SdofU.out -closeOnWrite -node 2 -dof 1 disp;
 recorder Node -file SdofF.out -closeOnWrite -node 1 -dof 1 reaction;
 recorder Element -file StressElement.out -closeOnWrite -ele 1 material stress

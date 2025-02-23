@@ -5,7 +5,7 @@
 wipe;
 # source Wsection.tcl; 
 # source LibUnits.tcl;
-model basic -ndm 3 -ndf 6; 
+model basic -ndm 2 -ndf 3; 
 set dir Cantilever_endtorque;
 file mkdir $dir;
 # clear opensess model
@@ -38,7 +38,7 @@ node 19 216 0 0;
 node 20 228 0 0;
 node 21 240 0 0;
 # Single point constraints - - Boundary Conditions 
-fix 1 1 1 1 1 1 1 0;
+fix 1 1 1 1;
 
 # define material and section 
 set poisson 0.3;
@@ -51,39 +51,55 @@ set A 27.3;
 set Iz 2070.0;
 set Iy 92.9;
 #W21x93 section
+set Avy [expr 0.58*(21.6-(2*0.93))]; #Assume web area
+set Avz [expr 2*0.93*8.42]; #Assume flange areas...
+
+set matID 1;
+uniaxialMaterial Elastic $matID $E;
+
 
 # DEFINE GEOMETERIC TRANSFORMATION FOR ELEMENTS ---------------------------------------------------------
 set ColTransfTag 1;
 #geomTransf Linear $transfTag $vecxzX $vecxzY $vecxzZ <-jntOffset $dXi $dYi $dZi $dXj $dYj $dZj>
-geomTransf Corotational $ColTransfTag 0 0 1;
+geomTransf Corotational $ColTransfTag;
+
+set numIP 2;
+set secTag 1;
+#section('WFSection2d', secTag, matTag, d, tw, bf, tf, Nfw, Nff)
+section WFSection2d $secTag $matID 21.6 0.58 8.42 0.93 3 1;
 
 # DEFINE ELEMENTS ---------------------------------------------------------------------
-#element elasticBeamColumn $eleTag $iNode $jNode $A $E $G $J $Iy $Iz $transfTag <-mass $massDens> <-cMass>
-element dispBeamColumnWarping 	1 1 2 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	2 2 3 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	3 3 4 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	4 4 5 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	5 5 6 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	6 6 7 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	7 7 8 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	8 8 9 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	9 9 10 $A $E $G $J $Iy $Iz $ColTransfTag $Cw  ;
-element elasticBeam 	10 10 11 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	11 11 12 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	12 12 13 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	13 13 14 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	14 14 15 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	15 15 16 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	16 16 17 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	17 17 18 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	18 18 19 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	19 19 20 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	20 20 21 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+#element elasticBeamColumn $eleTag 	  $iNode $jNode $A $E $G $J $Iy $Iz $transfTag <-mass $massDens> <-cMass>
+#element ElasticTimoshenkoBeam3d $tag $iNode $jNode <$E $G $A $J $Iz $Iy $Avy $Avz>or<$sectionTag> $transTag <-mass $m> <-cMass>
+#element nonlinearBeamColumn $eleTag $iNode $jNode $numIntgrPts $secTag $transfTag <-mass $massDens> <-iter $maxIters $tol>
+
+element nonlinearBeamColumn 	1 1 2    $numIP $secTag $ColTransfTag ;
+element nonlinearBeamColumn 	2 2 3    $numIP $secTag $ColTransfTag ;
+element nonlinearBeamColumn 	3 3 4    $numIP $secTag $ColTransfTag ;
+element nonlinearBeamColumn 	4 4 5    $numIP $secTag $ColTransfTag ;
+element nonlinearBeamColumn 	5 5 6    $numIP $secTag $ColTransfTag ;
+element nonlinearBeamColumn 	6 6 7    $numIP $secTag $ColTransfTag ;
+element nonlinearBeamColumn 	7 7 8    $numIP $secTag $ColTransfTag ;
+element nonlinearBeamColumn 	8 8 9    $numIP $secTag $ColTransfTag ;
+element nonlinearBeamColumn 	9 9 10   $numIP $secTag $ColTransfTag ;
+element nonlinearBeamColumn 	10 10 11 $numIP $secTag $ColTransfTag ;
+element nonlinearBeamColumn 	11 11 12 $numIP $secTag $ColTransfTag ;
+element nonlinearBeamColumn 	12 12 13 $numIP $secTag $ColTransfTag ;
+element nonlinearBeamColumn 	13 13 14 $numIP $secTag $ColTransfTag ;
+element nonlinearBeamColumn 	14 14 15 $numIP $secTag $ColTransfTag ;
+element nonlinearBeamColumn 	15 15 16 $numIP $secTag $ColTransfTag ;
+element nonlinearBeamColumn 	16 16 17 $numIP $secTag $ColTransfTag ;
+element nonlinearBeamColumn 	17 17 18 $numIP $secTag $ColTransfTag ;
+element nonlinearBeamColumn 	18 18 19 $numIP $secTag $ColTransfTag ;
+element nonlinearBeamColumn 	19 19 20 $numIP $secTag $ColTransfTag ;
+element nonlinearBeamColumn 	20 20 21 $numIP $secTag $ColTransfTag ;
 
 # RECORD AND SAVE OUTPUT (TO BE SET BEFORE ANALYZE COMMAND) -------------------------------------------------------------
 #recorder Node -file $dir/DFree.out -time -node 21 -dof 1 2 3 4 5 6 disp; 
 #recorder Node -file $dir/DFree.out -node 21 -dof 1 2 3 4 5 6 disp; 
-recorder Node -file $dir/DFree.out -closeOnWrite -time -node 21 -dof 1 2 3 4 5 6 disp; 
+recorder Node -file $dir/DFree.out -closeOnWrite -time -node 21 -dof 1 2 3 disp; 
+recorder Node -file $dir/React.out -closeOnWrite -time -node 1 -dof 1 2 3 reaction; 
+recorder Element -file $dir/eleForces.out -ele 1 forces
 
 # Records displacement at node 21
 
@@ -92,7 +108,7 @@ set patternTag 1;
 
 pattern Plain $patternTag Linear {
 	#load $nodeTag (ndf $LoadValues) #kips
-	load 21 0.0 0.0 0.0 1000.0 0.0 0.0;
+	load 21 0.0 0.0 1.0;
 }
 
 # CREATE THE CONSTRAINT HANDLER ------------------------------------------------------
@@ -113,13 +129,13 @@ algorithm NewtonLineSearch;
 
 # CREATE THE INTEGRATION SCHEME ------------------------------------------------------
 set lambda 0.01; # Set the load factor increment. A value of 1 indicates no further divison of load levels into steps. A value of 0.1, for example, would mean subdivision of each load step into 10 further steps.
-integrator DisplacementControl 21 4 $lambda; 
+integrator DisplacementControl 21 3 $lambda; 
 
 # CREATE THE ANALYSIS OBJECT ---------------------------------------------------------
 analysis Static; 
 
 # ANALYZE ----------------------------------------------------------------------------
-set NSteps [expr int(1./$lambda)]; # Number of steps in which the load, previously defined in pattern, is applied and the structure is analyzed. int() converts floating number into integer.
+set NSteps [expr int(0.1/$lambda)]; # Number of steps in which the load, previously defined in pattern, is applied and the structure is analyzed. int() converts floating number into integer.
 analyze $NSteps;
 
 puts "Done!"

@@ -184,20 +184,20 @@ set p [expr -$m*$g/4]
 
 # Define gravity loads
 pattern Plain 1 Linear {
-   load  5  0.0 0.0 $p 0.0 0.0 0.0 -const
-   load  6  0.0 0.0 $p 0.0 0.0 0.0 -const
-   load  7  0.0 0.0 $p 0.0 0.0 0.0 -const
-   load  8  0.0 0.0 $p 0.0 0.0 0.0 -const
+   load  5  0.0 0.0 $p 0.0 0.0 0.0 
+   load  6  0.0 0.0 $p 0.0 0.0 0.0 
+   load  7  0.0 0.0 $p 0.0 0.0 0.0 
+   load  8  0.0 0.0 $p 0.0 0.0 0.0 
 
-   load 10  0.0 0.0 $p 0.0 0.0 0.0 -const
-   load 11  0.0 0.0 $p 0.0 0.0 0.0 -const
-   load 12  0.0 0.0 $p 0.0 0.0 0.0 -const
-   load 13  0.0 0.0 $p 0.0 0.0 0.0 -const
+   load 10  0.0 0.0 $p 0.0 0.0 0.0 
+   load 11  0.0 0.0 $p 0.0 0.0 0.0 
+   load 12  0.0 0.0 $p 0.0 0.0 0.0 
+   load 13  0.0 0.0 $p 0.0 0.0 0.0 
 
-   load 15  0.0 0.0 $p 0.0 0.0 0.0 -const
-   load 16  0.0 0.0 $p 0.0 0.0 0.0 -const
-   load 17  0.0 0.0 $p 0.0 0.0 0.0 -const
-   load 18  0.0 0.0 $p 0.0 0.0 0.0 -const
+   load 15  0.0 0.0 $p 0.0 0.0 0.0 
+   load 16  0.0 0.0 $p 0.0 0.0 0.0 
+   load 17  0.0 0.0 $p 0.0 0.0 0.0 
+   load 18  0.0 0.0 $p 0.0 0.0 0.0 
 }
 
 set accelSeries "Path -filePath tabasFN.txt -dt 0.02 -factor $g"

@@ -5,7 +5,7 @@
 wipe;
 # source Wsection.tcl; 
 # source LibUnits.tcl;
-model basic -ndm 3 -ndf 6; 
+model basic -ndm 3 -ndf 7; 
 set dir Cantilever_endtorque;
 file mkdir $dir;
 # clear opensess model
@@ -59,26 +59,26 @@ geomTransf Corotational $ColTransfTag 0 0 1;
 
 # DEFINE ELEMENTS ---------------------------------------------------------------------
 #element elasticBeamColumn $eleTag $iNode $jNode $A $E $G $J $Iy $Iz $transfTag <-mass $massDens> <-cMass>
-element dispBeamColumnWarping 	1 1 2 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	2 2 3 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	3 3 4 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	4 4 5 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	5 5 6 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	6 6 7 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	7 7 8 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	8 8 9 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	9 9 10 $A $E $G $J $Iy $Iz $ColTransfTag $Cw  ;
-element elasticBeam 	10 10 11 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	11 11 12 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	12 12 13 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	13 13 14 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	14 14 15 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	15 15 16 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	16 16 17 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	17 17 18 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	18 18 19 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	19 19 20 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	20 20 21 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+element dispBeamColumn 	1 1 2 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+element dispBeamColumn 	2 2 3 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+element dispBeamColumn 	3 3 4 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+element dispBeamColumn 	4 4 5 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+element dispBeamColumn 	5 5 6 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+element dispBeamColumn 	6 6 7 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+element dispBeamColumn 	7 7 8 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+element dispBeamColumn 	8 8 9 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+element dispBeamColumn 	9 9 10 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+element dispBeamColumn 	10 10 11 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+element dispBeamColumn 	11 11 12 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+element dispBeamColumn 	12 12 13 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+element dispBeamColumn 	13 13 14 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+element dispBeamColumn 	14 14 15 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+element dispBeamColumn 	15 15 16 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+element dispBeamColumn 	16 16 17 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+element dispBeamColumn 	17 17 18 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+element dispBeamColumn 	18 18 19 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+element dispBeamColumn 	19 19 20 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+element dispBeamColumn 	20 20 21 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
 
 # RECORD AND SAVE OUTPUT (TO BE SET BEFORE ANALYZE COMMAND) -------------------------------------------------------------
 #recorder Node -file $dir/DFree.out -time -node 21 -dof 1 2 3 4 5 6 disp; 
@@ -90,9 +90,9 @@ recorder Node -file $dir/DFree.out -closeOnWrite -time -node 21 -dof 1 2 3 4 5 6
 # DEFINE LOAD PATTERN (End Torque)----------------------------------------------------------------
 set patternTag 1;
 
-pattern Plain $patternTag Linear {
+pattern Plain $patternTag "Linear" {
 	#load $nodeTag (ndf $LoadValues) #kips
-	load 21 0.0 0.0 0.0 1000.0 0.0 0.0;
+	load 21 0.0 0.0 0.0 1000.0 0.0 0.0 0.0;
 }
 
 # CREATE THE CONSTRAINT HANDLER ------------------------------------------------------

@@ -313,6 +313,11 @@ extern int
 TclModelBuilder_addForceBeamColumn(ClientData, Tcl_Interp *, int, TCL_Char **,
 				   Domain*, TclModelBuilder *);
 
+// Brighton Laiman: University of California, San Diego
+extern int
+TclModelBuilder_addTaperedForceBeamColumn(ClientData, Tcl_Interp *, int, TCL_Char **,
+   				          Domain*, TclModelBuilder *);
+
 extern int
 TclModelBuilder_addMasonPan12(ClientData , Tcl_Interp *, int argc,
 	TCL_Char **argv, Domain*, TclModelBuilder *);
@@ -1818,23 +1823,33 @@ TclModelBuilderElementCommand(ClientData clientData, Tcl_Interp *interp,
 						   theTclDomain, theTclBuilder);
     return result;
 
-  } else if (strcmp(argv[1],"forceBeamColumn") == 0 || 
-	     strcmp(argv[1],"dispBeamColumn") == 0  || 
-	     strcmp(argv[1],"timoshenkoBeamColumn") == 0  || 
-	     strcmp(argv[1],"forceBeamColumnCBDI") == 0  || 
-	     strcmp(argv[1],"forceBeamColumnCSBDI") == 0  || 
-	     strcmp(argv[1],"forceBeamColumnWarping") == 0  || 
-	     strcmp(argv[1],"forceBeamColumnThermal") == 0  || 
-	     strcmp(argv[1],"elasticForceBeamColumnWarping") == 0  || 
-	     strcmp(argv[1],"dispBeamColumnNL") == 0  || 
-	     strcmp(argv[1],"dispBeamColumnThermal") == 0  || 
-	     strcmp(argv[1],"elasticForceBeamColumn") == 0 || 
+  } else if (strcmp(argv[1],"forceBeamColumn") == 0 || //
+	     strcmp(argv[1],"dispBeamColumn") == 0  || //
+	     strcmp(argv[1],"timoshenkoBeamColumn") == 0  || //
+	     strcmp(argv[1],"forceBeamColumnCBDI") == 0  || //
+	     strcmp(argv[1],"forceBeamColumnCSBDI") == 0  || //
+	     strcmp(argv[1],"forceBeamColumnWarping") == 0  || //
+	     strcmp(argv[1],"forceBeamColumnThermal") == 0  || //
+	     strcmp(argv[1],"elasticForceBeamColumnWarping") == 0  || //
+	     strcmp(argv[1],"dispBeamColumnNL") == 0  || //
+	     strcmp(argv[1],"dispBeamColumnThermal") == 0  || //
+	     strcmp(argv[1],"elasticForceBeamColumn") == 0 || //
 	     strcmp(argv[1],"nonlinearBeamColumn") == 0 || 
-	     strcmp(argv[1],"dispBeamColumnWithSensitivity") == 0) {
+	     strcmp(argv[1],"dispBeamColumnWithSensitivity") == 0) {//
 
     int result = TclModelBuilder_addForceBeamColumn(clientData, interp, argc, argv,
 						    theTclDomain, theTclBuilder);
     return result;
+    // Brighton Laiman: University of California, San Diego
+  }
+  else if (strcmp(argv[1], "TapereddispBeamColumn") == 0 ||
+      strcmp(argv[1], "TapereddispBeamColumnS") == 0) {
+
+      int result = TclModelBuilder_addTaperedForceBeamColumn(clientData, interp, argc,
+          argv, theTclDomain,
+          theTclBuilder);
+      return result;
+
   } else if ((strcmp(argv[1],"quad") == 0) || (strcmp(argv[1],"stdQuad") == 0)) {
     int result = TclModelBuilder_addFourNodeQuad(clientData, interp, argc, argv,
 						 theTclDomain, theTclBuilder);

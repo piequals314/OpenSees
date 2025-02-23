@@ -53,7 +53,12 @@ class UniaxialFiber3d: public Fiber
     UniaxialFiber3d ();    
     UniaxialFiber3d (int tag, UniaxialMaterial &theMat, double Area, 
                      const Vector &position, double dvalue=1.0);
- 
+    // Brighton Laiman: University of California, San Diego
+    UniaxialFiber3d(int tag, UniaxialMaterial& theMat, double Area,
+        const Vector& position, double tp, int plFlag);
+    UniaxialFiber3d(int tag, UniaxialMaterial& theMat, UniaxialMaterial& thePlateMat,
+        double Area, const Vector& position, double tp, int plFlag);
+
     ~UniaxialFiber3d();
 
     int   setTrialFiberStrain(const Vector &vs);
@@ -80,10 +85,18 @@ class UniaxialFiber3d: public Fiber
     double getArea(void) {return area;};
     double getd(void) {return dValue;};
 
+    // Brighton Laiman: University of California, San Diego
+    UniaxialMaterial* getPlateMaterial(void) { return thePlateMaterial; };
+    double gettP(void) { return tPlate; };
+    int getPlFlag(void) { return PlateFlag; };
+
+
   protected:
     
   private:
     UniaxialMaterial *theMaterial;   // pointer to a material
+    UniaxialMaterial* thePlateMaterial;  	// pointer to an elastic material
+
     double area;                          // area of the fiber
     double dValue;
     double as[2];                            // matrix that transforms
@@ -91,6 +104,11 @@ class UniaxialFiber3d: public Fiber
     static Matrix ks;       // static class wide matrix object for returns
     static Vector fs;	    // static class wide vector object for returns					
     static ID code;
+
+    // Brighton Laiman: University of California, San Diego
+    double tPlate;
+    int PlateFlag;
+
 };
 
 

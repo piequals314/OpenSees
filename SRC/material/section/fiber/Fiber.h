@@ -83,6 +83,11 @@ class Fiber : public TaggedObject, public MovableObject
     virtual int commitSensitivity(const Vector &dedh, int gradNumber,
 				  int numGrads);
 
+    // Brighton Laiman: University of California, San Diego
+    virtual UniaxialMaterial* getPlateMaterial(void) { return 0; };
+    virtual double gettP(void) { return 0; };
+    virtual int getPlFlag(void) { return 0; };
+
  protected:
     Vector *sDefault;
     Matrix *fDefault;

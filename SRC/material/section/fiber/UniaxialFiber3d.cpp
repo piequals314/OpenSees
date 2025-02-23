@@ -128,11 +128,64 @@ UniaxialFiber3d::UniaxialFiber3d(int tag,
 	as[1] =  position(1);
 }
 
+// Brighton Laiman: University of California, San Diego
+UniaxialFiber3d::UniaxialFiber3d(int tag,
+    UniaxialMaterial& theMat,
+    double Area, const Vector& position, double tp, int plFlag)
+    :Fiber(tag, FIBER_TAG_Uniaxial3d),
+    theMaterial(0), area(Area), tPlate(tp), PlateFlag(plFlag)
+{
+    theMaterial = theMat.getCopy();  // get a copy of the MaterialModel
+
+    if (theMaterial == 0) {
+        opserr << "UniaxialFiber3d::UniaxialFiber3d -- failed to get copy of UniaxialMaterial\n";
+        exit(-1);
+    }
+
+    if (code(0) != SECTION_RESPONSE_P) {
+        code(0) = SECTION_RESPONSE_P;
+        code(1) = SECTION_RESPONSE_MZ;
+        code(2) = SECTION_RESPONSE_MY;
+    }
+
+    as[0] = -position(0);
+    as[1] = position(1);
+}
+
+// Constructor for Coupled Method Derivation
+UniaxialFiber3d::UniaxialFiber3d(int tag, UniaxialMaterial& theMat,
+    UniaxialMaterial& thePlateMat,
+    double Area, const Vector& position, double tp, int plFlag)
+    :Fiber(tag, FIBER_TAG_Uniaxial3d),
+    theMaterial(0), thePlateMaterial(0), area(Area), tPlate(tp), PlateFlag(plFlag)
+{
+    theMaterial = theMat.getCopy();      // get a copy of the MaterialModel
+    thePlateMaterial = thePlateMat.getCopy(); // get a copy of the Plate MaterialModel
+
+    if (theMaterial == 0 || thePlateMaterial == 0) {
+        opserr << "UniaxialFiber3d::UniaxialFiber3d -- failed to get copy of UniaxialMaterial\n";
+        exit(-1);
+    }
+
+    if (code(0) != SECTION_RESPONSE_P) {
+        code(0) = SECTION_RESPONSE_P;
+        code(1) = SECTION_RESPONSE_MZ;
+        code(2) = SECTION_RESPONSE_MY;
+    }
+
+    as[0] = -position(0);
+    as[1] = position(1);
+}
+// END Constructors
+
 // destructor:
 UniaxialFiber3d::~UniaxialFiber3d ()
 {
    if (theMaterial != 0)
       delete theMaterial;
+
+   if (thePlateMaterial != 0)
+       delete thePlateMaterial;
 }
 
 

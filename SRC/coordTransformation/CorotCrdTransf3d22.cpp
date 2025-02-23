@@ -64,6 +64,10 @@ Matrix CorotCrdTransf3d22::A(3,3);
 Matrix CorotCrdTransf3d22::Lr2(22,3);  // chagne dimension of the matrix to suit for warping & FLB 
 Matrix CorotCrdTransf3d22::Lr3(22,3);  // chagne dimension of the matrix to suit for warping & FLB 
 Matrix CorotCrdTransf3d22::T(17,22);   // chagne dimension of the matrix to suit for warping & FLB 
+Matrix CorotCrdTransf3d22::Tlg(22, 22);
+Matrix CorotCrdTransf3d22::TlgInv(22, 22);
+Matrix CorotCrdTransf3d22::Tbl(16, 22);
+Matrix CorotCrdTransf3d22::kg(22, 22);
 
 
 // constructor:

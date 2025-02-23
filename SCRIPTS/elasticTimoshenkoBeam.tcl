@@ -38,7 +38,7 @@ node 19 216 0 0;
 node 20 228 0 0;
 node 21 240 0 0;
 # Single point constraints - - Boundary Conditions 
-fix 1 1 1 1 1 1 1 0;
+fix 1 1 1 1 1 1 1;
 
 # define material and section 
 set poisson 0.3;
@@ -51,6 +51,8 @@ set A 27.3;
 set Iz 2070.0;
 set Iy 92.9;
 #W21x93 section
+set Avy [expr 0.58*(21.6-(2*0.93))]; #Assume web area
+set Avz [expr 2*0.93*8.42]; #Assume flange areas...
 
 # DEFINE GEOMETERIC TRANSFORMATION FOR ELEMENTS ---------------------------------------------------------
 set ColTransfTag 1;
@@ -58,32 +60,35 @@ set ColTransfTag 1;
 geomTransf Corotational $ColTransfTag 0 0 1;
 
 # DEFINE ELEMENTS ---------------------------------------------------------------------
-#element elasticBeamColumn $eleTag $iNode $jNode $A $E $G $J $Iy $Iz $transfTag <-mass $massDens> <-cMass>
-element dispBeamColumnWarping 	1 1 2 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	2 2 3 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	3 3 4 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	4 4 5 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	5 5 6 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	6 6 7 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	7 7 8 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	8 8 9 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	9 9 10 $A $E $G $J $Iy $Iz $ColTransfTag $Cw  ;
-element elasticBeam 	10 10 11 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	11 11 12 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	12 12 13 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	13 13 14 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	14 14 15 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	15 15 16 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	16 16 17 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	17 17 18 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	18 18 19 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	19 19 20 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	20 20 21 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+#element elasticBeamColumn $eleTag 	  $iNode $jNode $A $E $G $J $Iy $Iz $transfTag <-mass $massDens> <-cMass>
+#element ElasticTimoshenkoBeam3d $tag $iNode $jNode <$E $G $A $J $Iz $Iy $Avy $Avz>or<$sectionTag> $transTag <-mass $m> <-cMass>
+element elasticTimoshenkoBeam 	1 1 2    $E $G $A $J $Iz $Iy $Avy $Avz $ColTransfTag    ;
+element elasticTimoshenkoBeam 	2 2 3    $E $G $A $J $Iz $Iy $Avy $Avz $ColTransfTag    ;
+element elasticTimoshenkoBeam 	3 3 4    $E $G $A $J $Iz $Iy $Avy $Avz $ColTransfTag    ;
+element elasticTimoshenkoBeam 	4 4 5    $E $G $A $J $Iz $Iy $Avy $Avz $ColTransfTag    ;
+element elasticTimoshenkoBeam 	5 5 6    $E $G $A $J $Iz $Iy $Avy $Avz $ColTransfTag    ;
+element elasticTimoshenkoBeam 	6 6 7    $E $G $A $J $Iz $Iy $Avy $Avz $ColTransfTag    ;
+element elasticTimoshenkoBeam 	7 7 8    $E $G $A $J $Iz $Iy $Avy $Avz $ColTransfTag    ;
+element elasticTimoshenkoBeam 	8 8 9    $E $G $A $J $Iz $Iy $Avy $Avz $ColTransfTag    ;
+element elasticTimoshenkoBeam 	9 9 10   $E $G $A $J $Iz $Iy $Avy $Avz $ColTransfTag   ;
+element elasticTimoshenkoBeam 	10 10 11 $E $G $A $J $Iz $Iy $Avy $Avz $ColTransfTag ;
+element elasticTimoshenkoBeam 	11 11 12 $E $G $A $J $Iz $Iy $Avy $Avz $ColTransfTag ;
+element elasticTimoshenkoBeam 	12 12 13 $E $G $A $J $Iz $Iy $Avy $Avz $ColTransfTag ;
+element elasticTimoshenkoBeam 	13 13 14 $E $G $A $J $Iz $Iy $Avy $Avz $ColTransfTag ;
+element elasticTimoshenkoBeam 	14 14 15 $E $G $A $J $Iz $Iy $Avy $Avz $ColTransfTag ;
+element elasticTimoshenkoBeam 	15 15 16 $E $G $A $J $Iz $Iy $Avy $Avz $ColTransfTag ;
+element elasticTimoshenkoBeam 	16 16 17 $E $G $A $J $Iz $Iy $Avy $Avz $ColTransfTag ;
+element elasticTimoshenkoBeam 	17 17 18 $E $G $A $J $Iz $Iy $Avy $Avz $ColTransfTag ;
+element elasticTimoshenkoBeam 	18 18 19 $E $G $A $J $Iz $Iy $Avy $Avz $ColTransfTag ;
+element elasticTimoshenkoBeam 	19 19 20 $E $G $A $J $Iz $Iy $Avy $Avz $ColTransfTag ;
+element elasticTimoshenkoBeam 	20 20 21 $E $G $A $J $Iz $Iy $Avy $Avz $ColTransfTag ;
 
 # RECORD AND SAVE OUTPUT (TO BE SET BEFORE ANALYZE COMMAND) -------------------------------------------------------------
 #recorder Node -file $dir/DFree.out -time -node 21 -dof 1 2 3 4 5 6 disp; 
 #recorder Node -file $dir/DFree.out -node 21 -dof 1 2 3 4 5 6 disp; 
 recorder Node -file $dir/DFree.out -closeOnWrite -time -node 21 -dof 1 2 3 4 5 6 disp; 
+recorder Node -file $dir/React.out -closeOnWrite -time -node 1 -dof 1 2 3 4 5 6 reaction; 
+recorder Element -file $dir/eleForces.out -ele 1 forces
 
 # Records displacement at node 21
 
@@ -92,7 +97,7 @@ set patternTag 1;
 
 pattern Plain $patternTag Linear {
 	#load $nodeTag (ndf $LoadValues) #kips
-	load 21 0.0 0.0 0.0 1000.0 0.0 0.0;
+	load 21 0.0 0.0 0.0 1.0 0.0 1.0;
 }
 
 # CREATE THE CONSTRAINT HANDLER ------------------------------------------------------
@@ -119,7 +124,7 @@ integrator DisplacementControl 21 4 $lambda;
 analysis Static; 
 
 # ANALYZE ----------------------------------------------------------------------------
-set NSteps [expr int(1./$lambda)]; # Number of steps in which the load, previously defined in pattern, is applied and the structure is analyzed. int() converts floating number into integer.
+set NSteps [expr int(2./$lambda)]; # Number of steps in which the load, previously defined in pattern, is applied and the structure is analyzed. int() converts floating number into integer.
 analyze $NSteps;
 
 puts "Done!"

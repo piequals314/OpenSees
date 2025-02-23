@@ -1556,6 +1556,9 @@
     <ClCompile Include="..\..\..\SRC\material\section\PipeSection.cpp">
       <Filter>section</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\SRC\material\taperedSection\TaperedFiberSectionSmoothing3d.cpp">
+      <Filter>taperedSection</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\SRC\material\uniaxial\AxialSp.h">
@@ -2830,6 +2833,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\SRC\material\nD\MinMaxNDMaterial.h">
       <Filter>nD</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\SRC\material\taperedSection\TaperedFiberSectionSmoothing3d.h">
+      <Filter>taperedSection</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

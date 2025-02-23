@@ -38,7 +38,7 @@ node 19 216 0 0;
 node 20 228 0 0;
 node 21 240 0 0;
 # Single point constraints - - Boundary Conditions 
-fix 1 1 1 1 1 1 1 0;
+fix 1 1 1 1 1 1 1;
 
 # define material and section 
 set poisson 0.3;
@@ -59,31 +59,33 @@ geomTransf Corotational $ColTransfTag 0 0 1;
 
 # DEFINE ELEMENTS ---------------------------------------------------------------------
 #element elasticBeamColumn $eleTag $iNode $jNode $A $E $G $J $Iy $Iz $transfTag <-mass $massDens> <-cMass>
-element dispBeamColumnWarping 	1 1 2 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	2 2 3 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	3 3 4 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	4 4 5 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	5 5 6 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	6 6 7 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	7 7 8 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	8 8 9 $A $E $G $J $Iy $Iz $ColTransfTag $Cw   ;
-element elasticBeam 	9 9 10 $A $E $G $J $Iy $Iz $ColTransfTag $Cw  ;
-element elasticBeam 	10 10 11 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	11 11 12 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	12 12 13 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	13 13 14 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	14 14 15 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	15 15 16 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	16 16 17 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	17 17 18 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	18 18 19 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	19 19 20 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
-element elasticBeam 	20 20 21 $A $E $G $J $Iy $Iz $ColTransfTag $Cw;
+element elasticBeam 	1 1 2 $A $E $G $J $Iy $Iz $ColTransfTag    ;
+element elasticBeam 	2 2 3 $A $E $G $J $Iy $Iz $ColTransfTag    ;
+element elasticBeam 	3 3 4 $A $E $G $J $Iy $Iz $ColTransfTag    ;
+element elasticBeam 	4 4 5 $A $E $G $J $Iy $Iz $ColTransfTag    ;
+element elasticBeam 	5 5 6 $A $E $G $J $Iy $Iz $ColTransfTag    ;
+element elasticBeam 	6 6 7 $A $E $G $J $Iy $Iz $ColTransfTag    ;
+element elasticBeam 	7 7 8 $A $E $G $J $Iy $Iz $ColTransfTag    ;
+element elasticBeam 	8 8 9 $A $E $G $J $Iy $Iz $ColTransfTag    ;
+element elasticBeam 	9 9 10 $A $E $G $J $Iy $Iz $ColTransfTag   ;
+element elasticBeam 	10 10 11 $A $E $G $J $Iy $Iz $ColTransfTag ;
+element elasticBeam 	11 11 12 $A $E $G $J $Iy $Iz $ColTransfTag ;
+element elasticBeam 	12 12 13 $A $E $G $J $Iy $Iz $ColTransfTag ;
+element elasticBeam 	13 13 14 $A $E $G $J $Iy $Iz $ColTransfTag ;
+element elasticBeam 	14 14 15 $A $E $G $J $Iy $Iz $ColTransfTag ;
+element elasticBeam 	15 15 16 $A $E $G $J $Iy $Iz $ColTransfTag ;
+element elasticBeam 	16 16 17 $A $E $G $J $Iy $Iz $ColTransfTag ;
+element elasticBeam 	17 17 18 $A $E $G $J $Iy $Iz $ColTransfTag ;
+element elasticBeam 	18 18 19 $A $E $G $J $Iy $Iz $ColTransfTag ;
+element elasticBeam 	19 19 20 $A $E $G $J $Iy $Iz $ColTransfTag ;
+element elasticBeam 	20 20 21 $A $E $G $J $Iy $Iz $ColTransfTag ;
 
 # RECORD AND SAVE OUTPUT (TO BE SET BEFORE ANALYZE COMMAND) -------------------------------------------------------------
 #recorder Node -file $dir/DFree.out -time -node 21 -dof 1 2 3 4 5 6 disp; 
 #recorder Node -file $dir/DFree.out -node 21 -dof 1 2 3 4 5 6 disp; 
 recorder Node -file $dir/DFree.out -closeOnWrite -time -node 21 -dof 1 2 3 4 5 6 disp; 
+recorder Node -file $dir/React.out -closeOnWrite -time -node 1 -dof 1 2 3 4 5 6 reaction; 
+recorder Element -file $dir/eleForces.out -ele 1 forces
 
 # Records displacement at node 21
 
@@ -92,7 +94,7 @@ set patternTag 1;
 
 pattern Plain $patternTag Linear {
 	#load $nodeTag (ndf $LoadValues) #kips
-	load 21 0.0 0.0 0.0 1000.0 0.0 0.0;
+	load 21 0.0 0.0 0.0 1.0 0.0 1.0;
 }
 
 # CREATE THE CONSTRAINT HANDLER ------------------------------------------------------
@@ -119,7 +121,7 @@ integrator DisplacementControl 21 4 $lambda;
 analysis Static; 
 
 # ANALYZE ----------------------------------------------------------------------------
-set NSteps [expr int(1./$lambda)]; # Number of steps in which the load, previously defined in pattern, is applied and the structure is analyzed. int() converts floating number into integer.
+set NSteps [expr int(2./$lambda)]; # Number of steps in which the load, previously defined in pattern, is applied and the structure is analyzed. int() converts floating number into integer.
 analyze $NSteps;
 
 puts "Done!"
