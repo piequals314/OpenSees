@@ -319,6 +319,13 @@ TclCommand_addRemoFiber(ClientData clientData,
 			int argc,    
 			TCL_Char **argv);   
 
+//Brighton Laiman: University of California, San Diego
+int
+TclCommand_addRemoTaperedFiber(ClientData clientData,
+	Tcl_Interp* interp,
+	int argc,
+	TCL_Char** argv);
+// [END] Brighton Laiman: University of California, San Diego
 
 //Leo
 int
@@ -416,6 +423,11 @@ TclCommand_addFiber (ClientData clientData, Tcl_Interp *interp,
 		     int argc, TCL_Char **argv,
 		     TclModelBuilder *theTclBuilder);
 
+// Brighton Laiman: University of California, San Diego
+extern int
+TclCommand_addTaperedFiber(ClientData clientData, Tcl_Interp* interp,
+	int argc, TCL_Char** argv,
+	TclModelBuilder* theTclBuilder);
 
 extern int
 TclCommand_addHFiber (ClientData clientData, Tcl_Interp *interp,
@@ -605,6 +617,11 @@ TclModelBuilder::TclModelBuilder(Domain &theDomain, Tcl_Interp *interp, int NDM,
   Tcl_CreateCommand(interp, "fiber", TclCommand_addRemoFiber,
 		    (ClientData)NULL, NULL);    
 
+  // Brighton Laiman: University of California, San Diego
+  Tcl_CreateCommand(interp, "TaperedFiber", TclCommand_addRemoTaperedFiber,
+	  (ClientData)NULL, NULL);
+  // [END] Brighton Laiman: University of California, San Diego
+
   //LEO
   Tcl_CreateCommand(interp, "Hfiber", TclModelBuilder_addRemoHFiber,
 		    (ClientData)NULL, NULL);
@@ -751,6 +768,7 @@ TclModelBuilder::~TclModelBuilder()
   Tcl_DeleteCommand(theInterp, "layer");
 
   Tcl_DeleteCommand(theInterp, "fiber");
+  Tcl_DeleteCommand(theInterp, "TaperedFiber"); // Added by Brighton Laiman: University of California, San Diego
   Tcl_DeleteCommand(theInterp, "Hfiber"); //LEO
   Tcl_DeleteCommand(theInterp, "geomTransf");
   Tcl_DeleteCommand(theInterp, "updateMaterialStage");
@@ -4637,6 +4655,17 @@ TclCommand_addRemoFiber(ClientData clientData, Tcl_Interp *interp, int argc,
   return TclCommand_addFiber(clientData, interp, argc,argv,
 				  theTclBuilder);
 }
+
+// Brighton Laiman: University of California, San Diego
+int
+TclCommand_addRemoTaperedFiber(ClientData clientData, Tcl_Interp* interp, int argc,
+	TCL_Char** argv)
+{
+	return TclCommand_addTaperedFiber(clientData, interp, argc, argv,
+		theTclBuilder);
+}
+// [END] Brighton Laiman: University of California, San Diego
+
 
 int				
 TclModelBuilder_addRemoHFiber(ClientData clientData, Tcl_Interp *interp, int argc,   

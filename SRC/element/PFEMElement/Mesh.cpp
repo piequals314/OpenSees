@@ -54,6 +54,8 @@ void *OPS_ForceBeamColumn3d(const ID &info);
 void *OPS_DispBeamColumn2d(const ID &info);
 void *OPS_DispBeamColumn3d(const ID &info);
 
+void* OPS_TaperedDispBeamColumnSmoothing3d(const ID& info);
+
 void *OPS_TimoshenkoBeamColumn2d(const ID &info);
 void *OPS_TimoshenkoBeamColumn3d(const ID &info);
 
@@ -326,7 +328,24 @@ Mesh::setEleArgs() {
             }
             numelenodes = 2;
         }
-
+    }
+    else if (strcmp(type, "TapereddispBeamColumnS") == 0) {
+        if (ndm == 2) {
+            eleType = ELE_TAG_TaperedDispBeamColumnSmoothing3d;
+            if (OPS_TaperedDispBeamColumnSmoothing3d(info) == 0) {
+                opserr << "WARNING: failed to read eleArgs\n";
+                return -1;
+            }
+            numelenodes = 2;
+        }
+        else if (ndm == 3) {
+            eleType = ELE_TAG_TaperedDispBeamColumnSmoothing3d;
+            if (OPS_TaperedDispBeamColumnSmoothing3d(info) == 0) {
+                opserr << "WARNING: failed to read eleArgs\n";
+                return -1;
+            }
+            numelenodes = 2;
+        }
     } else if (strcmp(type, "timoshenkoBeamColumn") == 0) {
         if (ndm == 2) {
             eleType = ELE_TAG_TimoshenkoBeamColumn2d;
@@ -563,6 +582,9 @@ Mesh::newElements(const ID &elends) {
             break;
         case ELE_TAG_DispBeamColumn3d:
             OPS_Func = OPS_DispBeamColumn3d;
+            break;
+        case ELE_TAG_TaperedDispBeamColumnSmoothing3d:
+            OPS_Func = OPS_TaperedDispBeamColumnSmoothing3d;
             break;
         case ELE_TAG_TimoshenkoBeamColumn2d:
             OPS_Func = OPS_TimoshenkoBeamColumn2d;

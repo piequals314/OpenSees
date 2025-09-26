@@ -4,11 +4,11 @@
 #
 
 # SET UP ----------------------------------------------------------------------------
-#wipe;				# clear memory of all past model definitions
-#model BasicBuilder -ndm 3 -ndf 6;	# Define the model builder, ndm=#dimension, ndf=#dofs
-#set dataDir Data;			# set up name of data directory -- simple
-#file mkdir $dataDir; 			# create data directory
-#source LibUnits.tcl;			# define units
+wipe;				# clear memory of all past model definitions
+model BasicBuilder -ndm 3 -ndf 6;	# Define the model builder, ndm=#dimension, ndf=#dofs
+set dataDir Data;			# set up name of data directory -- simple
+file mkdir $dataDir; 			# create data directory
+source LibUnits.tcl;			# define units
 
 # MATERIAL parameters -------------------------------------------------------------------
 # define MATERIAL properties ----------------------------------------
@@ -49,7 +49,7 @@ set nftf 4;	# number of fibers along flange thickness
   set z4 [expr  $bf/2]
   
   #                           
-  section fiberSec  $SecTag {
+  section fiberSec  $SecTag -GJ $Ubig {
      #                     nfIJ  nfJK    yI  zI    yJ  zJ    yK  zK    yL  zL
      patch quadr  $matIDhard $nfbf $nftf   $y1 $z4   $y1 $z1   $y2 $z1   $y2 $z4
      patch quadr  $matIDhard $nftw $nfdw   $y2 $z3   $y2 $z2   $y3 $z2   $y3 $z3
@@ -61,3 +61,4 @@ set SecTagTorsion 99;		# ID tag for torsional section behavior
 set SecTag3D 3;			# ID tag for combined behavior for 3D model
 uniaxialMaterial Elastic $SecTagTorsion $Ubig;	# define elastic torsional stiffness
 section Aggregator $SecTag3D $SecTagTorsion T -section $SecTag;	# combine section properties
+puts "Done!"

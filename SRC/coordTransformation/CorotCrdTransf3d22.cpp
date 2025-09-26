@@ -36,7 +36,7 @@
 // warping degrees of freedom and FLB). Refer to Formulation and Implementation of 
 // Three-dimensional Beam-Column Analyses with Warping & Coupling Effects.
 
-//#define DEBUG
+#define DEBUG
 //#define NODEDISP
 //#define ELEDISP
 
